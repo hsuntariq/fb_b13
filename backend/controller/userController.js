@@ -115,6 +115,34 @@ const registerUser = asyncHandler(async (req, res) => {
   res.send(createdUser);
 });
 
+// login the user
+
+const loginUser = asyncHandler(async (req, res) => {
+  // get the data from the frontend
+  const { m_mail, password } = req.body;
+
+  // check if user exists in the database/app
+
+  const checkEmail = await userModel.findOne({
+    m_mail,
+  });
+
+  // throw an error if user email doesnt exists
+
+  if (!checkEmail) {
+    res.status(401);
+    throw new Error("Invalid Email");
+  }
+
+  if (checkEmail && (await bcrypt.compare(password, checkEmail.password))) {
+    res.send(checkEmail);
+  } else {
+    res.status(401);
+    throw new Error("Invalid password");
+  }
+});
+
 module.exports = {
   registerUser,
+  loginUser,
 };
