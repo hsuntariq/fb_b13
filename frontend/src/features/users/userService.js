@@ -10,3 +10,11 @@ export const registerUser = async (userData) => {
 
   return response.data;
 };
+
+export const verifyOTP = async (otpData) => {
+  const response = await axios.post(
+    `${base_url}/verify-otp/${otpData.user_id}`,
+    otpData
+  );
+  return response.data;
+};

@@ -55,3 +55,7 @@
 .btn-disabled {
   background-color: gray !important;
 }
+
+.otp input:focus {
+  border: 1px solid var(--bg-blue) !important;
+}

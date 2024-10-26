@@ -1,18 +1,18 @@
 import { Button, Card } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUserData, userReset } from "../../features/users/userSlice";
 import toast from "react-hot-toast";
-import { Oval } from "react-loader-spinner";
+import { Oval, ThreeCircles } from "react-loader-spinner";
 const RegisterForm = () => {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   // get the dataq from the global store/state
 
-  const { userError, userMessage, userLoading } = useSelector(
+  const { userError, userMessage, userLoading, userSuccess } = useSelector(
     (state) => state.user
   );
 
@@ -23,8 +23,13 @@ const RegisterForm = () => {
       toast.error(userMessage);
     }
 
+    if (userSuccess) {
+      navigate("/otp");
+      toast.success("OTP has been sent to the email, please verify!");
+    }
+
     dispatch(userReset());
-  }, [userError]);
+  }, [userError, userSuccess, dispatch]);
 
   const [months] = useState([
     "jan",
@@ -262,13 +267,12 @@ const RegisterForm = () => {
             } `}
           >
             {userLoading ? (
-              <Oval
+              <ThreeCircles
                 visible={true}
-                height="30"
-                width="30"
-                style={{}}
+                height="25"
+                width="25"
                 color="white"
-                ariaLabel="oval-loading"
+                ariaLabel="three-circles-loading"
                 wrapperStyle={{ justifyContent: "center" }}
                 wrapperClass=""
               />

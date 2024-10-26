@@ -34,7 +34,7 @@ const LoginForm = () => {
 
   return (
     <>
-      <Form className="p-3 shadow rounded-3 col-xl-10  mx-auto">
+      <Form className="p-3 bg-white shadow rounded-3 col-xl-10  mx-auto">
         <Form.Control
           value={m_mail}
           onChange={handleChange}
