@@ -47,3 +47,7 @@
 .outline-blue {
   border: 1px solid var(--bg-blue) !important;
 }
+
+.rounded-full {
+  clip-path: circle() !important;
+}

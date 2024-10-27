@@ -3,6 +3,7 @@ import { Form } from "react-bootstrap";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { Button } from "@mui/material";
 const LoginForm = () => {
+  // state to check the status of eye
   const [showEye, setShowEye] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [formFields, setFormFields] = useState({
@@ -50,23 +51,20 @@ const LoginForm = () => {
             type={`${showPass ? "text" : "password"}`}
             placeholder="Password"
           />
-          {showEye && (
-            <>
-              {showPass ? (
-                <FaRegEye
-                  className="me-2"
-                  cursor={"pointer"}
-                  onClick={() => setShowPass(false)}
-                />
-              ) : (
-                <FaRegEyeSlash
-                  className="me-2"
-                  cursor={"pointer"}
-                  onClick={() => setShowPass(true)}
-                />
-              )}
-            </>
-          )}
+          {showEye &&
+            (showPass ? (
+              <FaRegEye
+                onClick={() => setShowPass(false)}
+                className="me-2"
+                cursor={"pointer"}
+              />
+            ) : (
+              <FaRegEyeSlash
+                onClick={() => setShowPass(true)}
+                className="me-2"
+                cursor={"pointer"}
+              />
+            ))}
         </div>
         <Button variant="contained" className="w-100 bg-blue p-2 ">
           Log In
