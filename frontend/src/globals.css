@@ -51,3 +51,7 @@
 .rounded-full {
   clip-path: circle() !important;
 }
+
+.btn-disabled {
+  background-color: gray !important;
+}

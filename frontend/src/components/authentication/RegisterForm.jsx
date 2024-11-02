@@ -3,8 +3,29 @@ import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
-
+import { useDispatch, useSelector } from "react-redux";
+import { registerUserData, userReset } from "../../features/users/userSlice";
+import toast from "react-hot-toast";
+import { Oval } from "react-loader-spinner";
 const RegisterForm = () => {
+  const dispatch = useDispatch();
+
+  // get the dataq from the global store/state
+
+  const { userError, userMessage, userLoading } = useSelector(
+    (state) => state.user
+  );
+
+  // show error on error change
+
+  useEffect(() => {
+    if (userError) {
+      toast.error(userMessage);
+    }
+
+    dispatch(userReset());
+  }, [userError]);
+
   const [months] = useState([
     "jan",
     "feb",
@@ -61,6 +82,18 @@ const RegisterForm = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    const userData = {
+      f_name,
+      l_name,
+      m_mail,
+      gender,
+      password,
+      dob: `${date}-${month}-${year}`,
+    };
+
+    dispatch(registerUserData(userData));
+
     // const response = await fetch(
     //   "http://localhost:3001/api/user/register-user",
     //   {
@@ -83,21 +116,23 @@ const RegisterForm = () => {
 
     // send request through axios
 
-    const dataForBE = {
-      f_name,
-      l_name,
-      m_mail,
-      password,
-      gender,
-      dob: `${date}-${month}-${year}`,
-    };
+    // const dataForBE = {
+    //   f_name,
+    //   l_name,
+    //   m_mail,
+    //   password,
+    //   gender,
+    //   dob: `${date}-${month}-${year}`,
+    // };
 
-    const response = await axios.post(
-      "http://localhost:3001/api/user/register-user",
-      dataForBE
-    );
+    // const response = await axios.post(
+    //   "http://localhost:3001/api/user/register-user",
+    //   dataForBE
+    // );
 
-    console.log(response.data);
+    // localStorage.setItem("user", JSON.stringify(response.data));
+
+    // console.log(response.data);
   };
 
   return (
@@ -219,11 +254,27 @@ const RegisterForm = () => {
             opt out at any time.
           </p>
           <Button
+            disabled={userLoading}
             onClick={handleRegister}
             variant="contained"
-            className="bg-green w-50 d-block mx-auto fw-bold p-1 rounded-2"
+            className={`bg-green w-50 d-block mx-auto fw-bold p-1 rounded-2 ${
+              userLoading && "btn-disabled"
+            } `}
           >
-            Sign Up
+            {userLoading ? (
+              <Oval
+                visible={true}
+                height="30"
+                width="30"
+                style={{}}
+                color="white"
+                ariaLabel="oval-loading"
+                wrapperStyle={{ justifyContent: "center" }}
+                wrapperClass=""
+              />
+            ) : (
+              "Sign Up"
+            )}
           </Button>
           <Link
             to="/"

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { Button } from "@mui/material";
+import { Link } from "react-router-dom";
 const LoginForm = () => {
   // state to check the status of eye
   const [showEye, setShowEye] = useState(false);
@@ -70,18 +71,20 @@ const LoginForm = () => {
           Log In
         </Button>
         <a
-          href=""
+          href="/"
           className="text-primary text-center d-block my-1 text-decoration-none"
         >
           Forgotten password?
         </a>
         <hr />
-        <Button
-          variant="contained"
-          className="w-50 mx-auto d-block text-capitalize py-2 px-1 bg-green"
-        >
-          Create new account
-        </Button>
+        <Link to="/register" className="text-white text-decoration-none">
+          <Button
+            variant="contained"
+            className="w-50 mx-auto d-block text-capitalize py-2 px-1 bg-green"
+          >
+            Create new account
+          </Button>
+        </Link>
       </Form>
     </>
   );
