@@ -23,10 +23,10 @@ const RegisterForm = () => {
       toast.error(userMessage);
     }
 
-    if (userSuccess) {
-      navigate("/otp");
-      toast.success("OTP has been sent to the email, please verify!");
-    }
+    // if (userSuccess) {
+    //   navigate("/otp");
+    //   toast.success("OTP has been sent to the email, please verify!");
+    // }
 
     dispatch(userReset());
   }, [userError, userSuccess, dispatch]);

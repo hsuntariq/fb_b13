@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userReset, verifyOtpData } from "../../features/users/userSlice";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { Circles, ThreeDots } from "react-loader-spinner";
 const OTP = () => {
   const [otp, setOtp] = useState("");
   const { user, userError, userSuccess, userLoading, userMessage } =
@@ -14,11 +15,18 @@ const OTP = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (user?.otp == null) {
+      navigate("/");
+    }
+  }, []);
+
+  useEffect(() => {
     if (userError) {
       toast.error(userMessage);
     }
     if (userSuccess) {
       toast.success("OTP verified");
+      navigate("/home");
     }
 
     dispatch(userReset());
@@ -57,11 +65,31 @@ const OTP = () => {
               Clear
             </Button>
             <Button
+              disabled={userLoading}
               onClick={verfifyOTP}
               variant="contained"
-              className="bg-success rounded-pill"
+              className={`rounded-pill ${
+                userLoading ? "bg-secondary text-white" : "bg-success"
+              } `}
             >
-              verify OTP
+              {userLoading ? (
+                <>
+                  <div className="d-flex align-items-center text-white">
+                    <Circles
+                      visible={true}
+                      height="25"
+                      width="25"
+                      color="white"
+                      ariaLabel="three-circles-loading"
+                      wrapperStyle={{ justifyContent: "center" }}
+                      wrapperClass=""
+                    />
+                    verifying...
+                  </div>
+                </>
+              ) : (
+                "verify OTP"
+              )}
             </Button>
           </div>
         </div>
