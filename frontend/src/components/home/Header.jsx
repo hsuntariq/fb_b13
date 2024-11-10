@@ -16,6 +16,8 @@ import ProfileDropDown from "./ProfileDropDown";
 const Header = () => {
   const [size, setSize] = useState(window.innerWidth);
   const { user } = useSelector((state) => state.user);
+  const [showPopUp, setShowPopUp] = useState(false);
+
   const changeSize = () => {
     setSize(window.innerWidth);
   };
@@ -96,7 +98,7 @@ const Header = () => {
             </div>
           </div>
 
-          <div className="position-relative">
+          <div className="position-relative drop-pop">
             {user?.image ? (
               <img
                 src={user?.image}
@@ -105,25 +107,28 @@ const Header = () => {
                 className="rounded-full"
               />
             ) : (
-              <div className="position-relative">
+              <div
+                className="position-relative drop-pop"
+                onClick={() => setShowPopUp(true)}
+              >
                 <div
-                  className="rounded-full p-2"
+                  className="rounded-full p-2 drop-pop"
                   style={{ background: "#F0F2F5" }}
                 >
-                  <FaUser size={20} />
+                  <FaUser className="drop-pop" size={20} />
                 </div>
                 <div
-                  className="drop position-absolute "
+                  className="drop position-absolute drop-pop"
                   style={{ bottom: "-3px", right: "-2px" }}
                 >
                   <RiArrowDropDownLine
-                    className="border bg-dark text-white rounded-circle"
+                    className="border bg-dark text-white drop-pop rounded-circle"
                     style={{ background: "" }}
                   />
                 </div>
               </div>
             )}
-            <ProfileDropDown />
+            {showPopUp && <ProfileDropDown setShowPopUp={setShowPopUp} />}
           </div>
         </div>
       </div>

@@ -6,6 +6,10 @@
   --bg-light-gray: #f2f4f7;
 }
 
+body {
+  overflow: hidden !important;
+}
+
 .bg-blue {
   background-color: var(--bg-blue) !important;
 }
@@ -22,6 +26,9 @@
 }
 .text-md {
   font-size: var(--text-md) !important;
+}
+.w-max {
+  width: max-content !important;
 }
 
 .height-100 {
@@ -78,4 +85,30 @@
 }
 .w-70 {
   width: 40% !important;
+}
+
+.bg-gray {
+  background-color: #d8dadf !important;
+}
+
+.sidebar-list:hover {
+  background-color: #d8dadf;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.text-area {
+  font-size: 1.5rem !important;
+  resize: none !important;
+}
+
+.text-area::placeholder {
+  font-size: 1.5rem !important;
+}
+
+.type-radio {
+  height: 20px !important;
+  width: 20px !important;
 }
