@@ -10,7 +10,7 @@ const Sidebar = () => {
   const [number, setNumber] = useState(8);
   return (
     <>
-      <div className="height-100 ">
+      <div className="height-100 position-sticky" style={{ top: "50px" }}>
         <ul className="list-unstyled d-flex flex-column gap-1">
           <li className="d-flex p-2 px-4 rounded-2 sidebar-list gap-3 align-items-center">
             <img

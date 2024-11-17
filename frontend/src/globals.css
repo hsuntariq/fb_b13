@@ -6,8 +6,17 @@
   --bg-light-gray: #f2f4f7;
 }
 
+* {
+  box-sizing: border-box !important;
+}
+
 body {
-  overflow: hidden !important;
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+}
+
+.object-cover {
+  object-fit: contain !important;
 }
 
 .bg-blue {
@@ -111,4 +120,14 @@ body {
 .type-radio {
   height: 20px !important;
   width: 20px !important;
+}
+
+.transition-sm {
+  transition: all 0.9s !important;
+}
+.transition-md {
+  transition: all 0.5s !important;
+}
+.transition-lg {
+  transition: all 0.2s !important;
 }

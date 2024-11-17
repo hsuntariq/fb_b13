@@ -5,12 +5,26 @@ import { FaGlobeAmericas, FaLock } from "react-icons/fa";
 import { IoMdArrowBack } from "react-icons/io";
 import { MdGroup } from "react-icons/md";
 
-const PrivacyBox = () => {
+const PrivacyBox = ({
+  showPrivacyBox,
+  setShowPrivacyBox,
+  visibility,
+  setVisibility,
+}) => {
   return (
     <>
-      <div className="position-absolute h-100 p-4 card w-100 border-0 top-0 shadow-lg end-0">
+      <div
+        style={{
+          transform: `${showPrivacyBox ? "translateX(0)" : "translateX(100%)"}`,
+          opacity: `${showPrivacyBox ? "1" : "0"}`,
+        }}
+        className="position-absolute transition-lg h-100 p-4 card w-100 border-0 top-0 shadow-lg end-0"
+      >
         <div className="d-flex align-items-center">
-          <div className="p-2 rounded-full d-flex justify-content-center align-items-center bg-gray position-absolute">
+          <div
+            onClick={() => setShowPrivacyBox(false)}
+            className="p-2 cursor-pointer rounded-full d-flex justify-content-center align-items-center bg-gray position-absolute"
+          >
             <IoMdArrowBack />
           </div>
           <Typography className="fw-semibold w-100 text-center">
@@ -42,7 +56,13 @@ const PrivacyBox = () => {
               </Typography>
             </div>
           </div>
-          <input type="radio" className="form-check type-radio" name="type" />
+          <input
+            onChange={(e) => setVisibility(e.target.value)}
+            type="radio"
+            value="public"
+            className="form-check type-radio"
+            name="type"
+          />
         </div>
         <div className="d-flex my-2 justify-content-between align-items-center">
           <div className="d-flex gap-2 align-items-center text-md">
@@ -58,7 +78,13 @@ const PrivacyBox = () => {
               </Typography>
             </div>
           </div>
-          <input type="radio" className="form-check type-radio" name="type" />
+          <input
+            onChange={(e) => setVisibility(e.target.value)}
+            type="radio"
+            value="friends"
+            className="form-check type-radio"
+            name="type"
+          />
         </div>
         <div className="d-flex my-2 justify-content-between align-items-center">
           <div className="d-flex gap-2 align-items-center text-md">
@@ -71,7 +97,13 @@ const PrivacyBox = () => {
               </Typography>
             </div>
           </div>
-          <input type="radio" className="form-check type-radio" name="type" />
+          <input
+            onChange={(e) => setVisibility(e.target.value)}
+            type="radio"
+            value="only_me"
+            className="form-check type-radio"
+            name="type"
+          />
         </div>
       </div>
     </>

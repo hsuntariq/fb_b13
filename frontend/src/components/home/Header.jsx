@@ -32,7 +32,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="d-flex align-items-center justify-content-between p-1 bg-white shadow-sm">
+      <div className="d-flex align-items-center position-sticky top-0 z-3 justify-content-between p-1 bg-white shadow-sm">
         <div className="search d-flex gap-3">
           <img width={40} src={logo} alt="apnibook logo" />
           <div

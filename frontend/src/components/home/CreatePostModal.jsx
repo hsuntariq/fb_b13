@@ -1,16 +1,20 @@
 import * as React from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Fa42Group } from "react-icons/fa6";
 import { MdArrowDropDown } from "react-icons/md";
 import { RiGroupFill } from "react-icons/ri";
 import EmojiPicker from "emoji-picker-react";
 import { BsEmojiSmile } from "react-icons/bs";
 import PrivacyBox from "./PrivacyBox";
-
+import axios from "axios";
+import { ThreeCircles } from "react-loader-spinner";
+import { postReset, uploadPostData } from "../../features/posts/postSlice";
+import { toast } from "react-hot-toast";
 const style = {
   position: "absolute",
   top: "50%",
@@ -24,13 +28,23 @@ const style = {
 };
 
 export default function CreatePostModal() {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  const [open, setOpen] = React.useState(false);
+  const { postLoading, postError, postSuccess } = useSelector(
+    (state) => state.posts
+  );
+  const [open, setOpen] = useState(false);
+  const [showPrivacyBox, setShowPrivacyBox] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [emojiOpen, setEmojiOpen] = React.useState(false);
-  const [status, setStatus] = React.useState("");
-  const [btnDisabled, setBtnDisabled] = React.useState(true);
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const [status, setStatus] = useState("");
+  const [btnDisabled, setBtnDisabled] = useState(true);
+  const [visibility, setVisibility] = useState("public");
+  const [imagePreview, setImagePreview] = useState(null);
+  const [image, setImage] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
+
   React.useEffect(() => {
     if (status.length > 0) {
       setBtnDisabled(false);
@@ -38,6 +52,59 @@ export default function CreatePostModal() {
       setBtnDisabled(true);
     }
   }, [status]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const imageUrl = URL.createObjectURL(file);
+    setImage(file);
+    setImagePreview(imageUrl);
+    setBtnDisabled(false);
+  };
+
+  const handleImageUpload = async () => {
+    const data = new FormData();
+    data.append("upload_preset", "ls8frk5v");
+    data.append("file", image);
+    try {
+      setImageLoading(true);
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dwtsjgcyf/image/upload",
+        data
+      );
+      setImageLoading(false);
+      setImage(null);
+      setImagePreview(null);
+      return response?.data?.url;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    if (postError) {
+      toast.error(postMessage);
+    }
+
+    if (postSuccess) {
+      toast.success("Post uploaded successfully!");
+      setStatus("");
+      setImage(null);
+      setImagePreview(null);
+      handleClose();
+    }
+    dispatch(postReset());
+  }, [postError, postSuccess]);
+
+  const handlePostUpload = async () => {
+    const imageURL = await handleImageUpload(image);
+    const postData = {
+      content: imageURL,
+      caption: status,
+      visibility,
+    };
+    dispatch(uploadPostData(postData));
+  };
+
   return (
     <>
       <input
@@ -53,7 +120,11 @@ export default function CreatePostModal() {
         aria-describedby="modal-modal-description"
         style={{ background: "rgba(255,255,255,0.5)" }}
       >
-        <Box sx={style} className="rounded-3 shadow-lg">
+        <Box
+          sx={style}
+          // style={{ overflow: "hidden" }}
+          className="rounded-3 shadow-lg"
+        >
           <Typography className="text-center" variant="h5">
             Create post
           </Typography>
@@ -71,7 +142,10 @@ export default function CreatePostModal() {
                 {user?.f_name} {user?.l_name}
               </Typography>
               <div className="bg-gray w-max p-1 rounded-1">
-                <div className="d-flex align-items-center gap-1 text-sm fw-semi-bold">
+                <div
+                  onClick={() => setShowPrivacyBox(true)}
+                  className="d-flex align-items-center gap-1 text-sm fw-semi-bold"
+                >
                   <RiGroupFill />
                   <Typography className="fw-semibold text-sm">
                     Friends
@@ -89,6 +163,14 @@ export default function CreatePostModal() {
             className="form-control my-2 border-0 shadow-none text-area"
             placeholder={`Whats on your mind, ${user?.f_name}?`}
           ></textarea>
+          {/* image preview */}
+          {imagePreview && (
+            <img
+              src={imagePreview ? imagePreview : null}
+              className="prev-image w-100 border p-3 rounded-3"
+              style={{ height: "200px", objectFit: "contain" }}
+            />
+          )}
           <div className="d-flex justify-content-between">
             <div className="colors">Color</div>
             <div className="emojis  position-relative">
@@ -109,12 +191,21 @@ export default function CreatePostModal() {
           <div className="border my-2 rounded-2 p-3 d-flex justify-content-between">
             <Typography className="fw-semibold">Add to your post</Typography>
             <div className="d-flex gap-2">
-              <img
-                src="/icons/photos.webp"
-                width={30}
-                className="cursor-pointer"
-                alt="icon post images"
-              />
+              <div className="position-relative">
+                <input
+                  type="file"
+                  name=""
+                  onChange={handleImageChange}
+                  className="position-absolute opacity-0"
+                  id=""
+                />
+                <img
+                  src="/icons/photos.webp"
+                  width={30}
+                  className="cursor-pointer"
+                  alt="icon post images"
+                />
+              </div>
               <img
                 src="/icons/video.png"
                 width={30}
@@ -124,14 +215,36 @@ export default function CreatePostModal() {
             </div>
           </div>
           <Button
-            disabled={btnDisabled}
+            onClick={handlePostUpload}
+            disabled={btnDisabled || imageLoading || postLoading}
             variant="contained"
-            className={`w-100 ${btnDisabled ? "btn-secondary" : ""} `}
+            className={`w-100 ${
+              btnDisabled || imageLoading ? "btn-secondary" : ""
+            } `}
           >
-            Add Post
+            {imageLoading ? (
+              <>
+                <ThreeCircles
+                  visible={true}
+                  height="25"
+                  width="25"
+                  color="white"
+                  ariaLabel="three-circles-loading"
+                  wrapperStyle={{ justifyContent: "center" }}
+                  wrapperClass=""
+                />
+              </>
+            ) : (
+              "Add Post"
+            )}
           </Button>
 
-          <PrivacyBox />
+          <PrivacyBox
+            showPrivacyBox={showPrivacyBox}
+            setShowPrivacyBox={setShowPrivacyBox}
+            visibility={visibility}
+            setVisibility={setVisibility}
+          />
         </Box>
       </Modal>
     </>

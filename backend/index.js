@@ -6,6 +6,7 @@ const app = express();
 require("dotenv").config();
 require("colors");
 const cors = require("cors");
+const postRouter = require("./routes/postRoutes");
 app.use(cors());
 connectDB();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/user/", userRouter);
+app.use("/api/posts/", postRouter);
 
 app.use(errorHandler);
 

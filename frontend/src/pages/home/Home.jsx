@@ -19,13 +19,13 @@ const Home = () => {
     <>
       <Header />
       <Row>
-        <Col lg={2}>
+        <Col xl={2} lg={3} md={0} className="d-none d-lg-block">
           <Sidebar />
         </Col>
-        <Col lg={8}>
+        <Col xl={8} lg={7} md={9} className="p-md-5 p-sm-2 p-xl-0 p-lg-0 p-4">
           <Posts />
         </Col>
-        <Col lg={2}></Col>
+        <Col xl={2} lg={2} md={3}></Col>
       </Row>
     </>
   );
