@@ -18,3 +18,8 @@ export const verifyOTP = async (otpData) => {
   );
   return response.data;
 };
+
+export const getAllUsers = async () => {
+  const response = await axios.get(`${base_url}/get-all-users`);
+  return response.data;
+};

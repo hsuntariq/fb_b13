@@ -1,6 +1,6 @@
 :root {
   --text-sm: 0.7rem;
-  --text-md: 0.9rem;
+  --text-md: 1rem;
   --bg-blue: #0866ff;
   --bg-green: #36a420;
   --bg-light-gray: #f2f4f7;
@@ -130,4 +130,8 @@ body {
 }
 .transition-lg {
   transition: all 0.2s !important;
+}
+
+.new-request:hover {
+  background-color: #e6e8ea !important;
 }

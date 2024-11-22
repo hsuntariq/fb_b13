@@ -6,6 +6,7 @@ import Header from "../../components/home/Header";
 import { Row, Col } from "react-bootstrap";
 import Sidebar from "../../components/home/Sidebar";
 import Posts from "../../components/home/Posts";
+import Users from "../../components/home/Users";
 const Home = () => {
   const { user } = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -25,7 +26,9 @@ const Home = () => {
         <Col xl={8} lg={7} md={9} className="p-md-5 p-sm-2 p-xl-0 p-lg-0 p-4">
           <Posts />
         </Col>
-        <Col xl={2} lg={2} md={3}></Col>
+        <Col xl={2} lg={2} md={3}>
+          <Users />
+        </Col>
       </Row>
     </>
   );

@@ -7,6 +7,7 @@ require("dotenv").config();
 require("colors");
 const cors = require("cors");
 const postRouter = require("./routes/postRoutes");
+const requestRouter = require("./routes/requestRoute");
 app.use(cors());
 connectDB();
 
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/user/", userRouter);
 app.use("/api/posts/", postRouter);
+app.use("/api/requests/", requestRouter);
 
 app.use(errorHandler);
 

@@ -188,6 +188,11 @@ const verifyOTP = asyncHandler(async (req, res) => {
   }
 });
 
+const getAllUsers = asyncHandler(async (req, res) => {
+  const getUsers = await userModel.find();
+  res.send(getUsers);
+});
+
 // create the tokens
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -199,4 +204,5 @@ module.exports = {
   registerUser,
   loginUser,
   verifyOTP,
+  getAllUsers,
 };
