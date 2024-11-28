@@ -2,14 +2,30 @@ const mongoose = require("mongoose");
 
 const requestSchema = mongoose.Schema(
   {
-    receivedRequests: {
-      type: Array,
-      default: [],
-    },
-    sendRequests: {
-      type: Array,
-      default: [],
-    },
+    receivedRequests: [
+      {
+        from: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        to: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      },
+    ],
+    sendRequests: [
+      {
+        from: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        to: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -25,7 +25,21 @@ const App = () => {
     return () => window.removeEventListener("load", handleLoad);
   }, []);
   if (loading) {
-    return <h1 className="display-1">Loading...</h1>;
+    return (
+      <>
+        <div
+          style={{ height: "100vh" }}
+          className="d-flex justify-content-center align-items-center"
+        >
+          <img
+            width={200}
+            height={200}
+            src="https://www.pidl.org/site-assets/images/social-inside-facebook-icon.png/@@images/image.png"
+            alt="loading..."
+          />
+        </div>
+      </>
+    );
   }
   return (
     <>

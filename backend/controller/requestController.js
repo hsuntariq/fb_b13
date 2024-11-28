@@ -6,23 +6,26 @@ const addFriend = asyncHandler(async (req, res) => {
   const from = req.user._id;
 
   // Check if a similar request already exists
+
   const existingRequest = await requestModel.findOne({
     "sendRequests.from": from,
     "sendRequests.to": to,
   });
 
   if (existingRequest) {
+    // cancel the friend request
+    await requestModel.deleteOne({ _id: existingRequest._id });
     res.status(400);
-    throw new Error("Already requested");
+    throw new Error("Request Cancelled");
+  } else {
+    // Create a new friend request - user 1 = ahmed = from
+    const newRequest = await requestModel.create({
+      sendRequests: [{ from, to }],
+      receivedRequests: [{ from: to, to: from }],
+    });
+
+    res.send(newRequest);
   }
-
-  // Create a new friend request - user 1 = ahmed = from
-  const newRequest = await requestModel.create({
-    sendRequests: [{ from, to }],
-    receivedRequests: [{ from: to, to: from }],
-  });
-
-  res.send(newRequest);
 });
 
 module.exports = {

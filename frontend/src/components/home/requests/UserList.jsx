@@ -1,10 +1,36 @@
 import { Button, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addFriendRequest,
+  requestReset,
+} from "../../../features/requests/requestSlice";
 
-const UserList = ({ f_name, l_name, image }) => {
+const UserList = ({ f_name, l_name, image, _id }) => {
+  const dispatch = useDispatch();
+  const {
+    requestLoading,
+    requestError,
+    requestSuccess,
+    requestMessage,
+    requests,
+  } = useSelector((state) => state.requests);
   const username = f_name + " " + l_name;
+
   const slicedName =
     username.length > 10 ? `${username.slice(0, 10)}... ` : username;
+  useEffect(() => {
+    if (requestError) {
+      toast.error(requestMessage);
+    }
+
+    dispatch(requestReset());
+  }, [requestError]);
+  const handleRequest = () => {
+    dispatch(addFriendRequest(_id));
+  };
+
   return (
     <>
       <div className="d-flex rounded-3 new-request p-3 gap-2 align-items-center">
@@ -24,7 +50,11 @@ const UserList = ({ f_name, l_name, image }) => {
             </Typography>
           </div>
           <div className="d-flex gap-2">
-            <Button style={{ fontWeight: "500" }} variant="contained">
+            <Button
+              onClick={handleRequest}
+              style={{ fontWeight: "500" }}
+              variant="contained"
+            >
               Add Friend
             </Button>
             <Button
