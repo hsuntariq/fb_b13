@@ -21,7 +21,7 @@ const Posts = () => {
   }, [dispatch]);
   return (
     <>
-      <div className="col-xxl-6 col-xl-10 col-lg-10 mx-auto">
+      <div className="col-xxl-7 col-xl-11 col-lg-10 mx-auto">
         <CreatePosts />
         {postLoading ? (
           <PostLoader />

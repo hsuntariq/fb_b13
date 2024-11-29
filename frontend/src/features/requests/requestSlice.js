@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addRequest } from "./requestService";
+import { addRequest, getMyRequests } from "./requestService";
 
 const initialState = {
   requests: [],
@@ -14,7 +14,18 @@ export const addFriendRequest = createAsyncThunk(
   async (to_id, thunkAPI) => {
     try {
       let token = thunkAPI.getState().user.user.token;
-      return addRequest(to_id, token);
+      return await addRequest(to_id, token);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+export const myRequestsData = createAsyncThunk(
+  "get-my-requests",
+  async (_, thunkAPI) => {
+    try {
+      let token = thunkAPI.getState().user.user.token;
+      return await getMyRequests(token);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.error);
     }
@@ -47,7 +58,19 @@ export const requestSlice = createSlice({
       .addCase(addFriendRequest.fulfilled, (state, action) => {
         state.requestLoading = false;
         state.requestSuccess = true;
-        state.requests.push(action.payload);
+      })
+      .addCase(myRequestsData.pending, (state, action) => {
+        state.requestLoading = true;
+      })
+      .addCase(myRequestsData.rejected, (state, action) => {
+        state.requestError = true;
+        state.requestLoading = false;
+        state.requestMessage = action.payload;
+      })
+      .addCase(myRequestsData.fulfilled, (state, action) => {
+        state.requestLoading = false;
+        state.requestSuccess = true;
+        state.requests = action.payload;
       });
   },
 });

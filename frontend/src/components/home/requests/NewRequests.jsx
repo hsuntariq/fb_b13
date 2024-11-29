@@ -4,10 +4,15 @@ import UserList from "./UserList";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { getAllUsersData, userReset } from "../../../features/users/userSlice";
+import {
+  myRequestsData,
+  requestReset,
+} from "../../../features/requests/requestSlice";
 
 const NewRequests = () => {
   const { userLoading, userError, userSuccess, userMessages, allUsers } =
     useSelector((state) => state.user);
+  const { requests } = useSelector((state) => state.requests);
   const dispatch = useDispatch();
   useEffect(() => {
     if (userError) {
@@ -15,9 +20,15 @@ const NewRequests = () => {
     }
 
     dispatch(getAllUsersData());
-
+    dispatch(myRequestsData());
+    dispatch(requestReset());
     dispatch(userReset());
   }, []);
+
+  const filteredUsers = allUsers?.filter((item, index) => {
+    return item?.id === requests[index]?.sendRequests[0]?.to;
+  });
+
   return (
     <>
       <div className="d-flex p-3 w-100  align-items-center justify-content-between">
@@ -69,9 +80,6 @@ const NewRequests = () => {
         </div>
       </div>
       <hr />
-      {allUsers?.map((item, index) => {
-        return <UserList key={index} {...item} />;
-      })}
     </>
   );
 };
