@@ -1,5 +1,5 @@
 import { Button, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,8 +8,17 @@ import {
 } from "../../../features/requests/requestSlice";
 import { ThreeCircles } from "react-loader-spinner";
 
+import io from "socket.io-client";
+
+const socket = io.connect("http://localhost:3001");
+
 const UserList = ({ f_name, l_name, image, _id }) => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+  const [btnState, setBtnState] = useState({
+    text: "Add Friend",
+    disabled: false,
+  });
   const [loading, setLoading] = useState(false);
   const {
     requestLoading,
@@ -20,19 +29,25 @@ const UserList = ({ f_name, l_name, image, _id }) => {
   } = useSelector((state) => state.requests);
   const username = f_name + " " + l_name;
 
+  const btnRef = useRef();
+
   const slicedName =
     username.length > 10 ? `${username.slice(0, 10)}... ` : username;
-  // useEffect(() => {
-  //   if (requestError) {
-  //     toast.error(requestMessage);
-  //   }
 
-  //   dispatch(requestReset());
-  // }, [requestError]);
+  useEffect(() => {
+    socket.on("show_request", (data) => {
+      if (data?.to_id == user?._id) {
+        alert("You have a new Request");
+      }
+    });
+  }, [socket]);
+
   const handleRequest = async (id) => {
     try {
       setLoading(true);
-      await dispatch(addFriendRequest(id));
+      socket.emit("add_friend", { from_id: user?._id, to_id: id });
+      // await dispatch(addFriendRequest(id));
+      // setBtnState({ text: "Requested", disabled: true });
     } catch (error) {
       toast.error("Request already sent");
     } finally {
@@ -60,29 +75,34 @@ const UserList = ({ f_name, l_name, image, _id }) => {
           </div>
           <div className="d-flex gap-2">
             <Button
-              sx={{
-                textTransform: "capitalize",
-                width: "max-content",
-              }}
+              ref={btnRef}
+              disabled={btnState.disabled}
+              sx={{ textTransform: "capitalize", width: "max-content" }}
               size="small"
               onClick={() => handleRequest(_id)}
-              style={{ fontWeight: "500" }}
+              style={{
+                background: btnState.disabled ? "#D6D9DD" : "#1976D2",
+                fontWeight: "500",
+              }}
               variant="contained"
             >
               {loading ? (
-                <ThreeCircles
-                  visible={true}
-                  height="25"
-                  width="25"
-                  color="white"
-                  ariaLabel="three-circles-loading"
-                  wrapperStyle={{ justifyContent: "center" }}
-                  wrapperClass=""
-                />
+                <>
+                  <ThreeCircles
+                    visible={true}
+                    height="25"
+                    width="25"
+                    color="white"
+                    ariaLabel="three-circles-loading"
+                    wrapperStyle={{ justifyContent: "center" }}
+                    wrapperClass=""
+                  />
+                </>
               ) : (
-                " Add Friend"
+                <>{btnState.text}</>
               )}
             </Button>
+
             <Button
               sx={{
                 textTransform: "capitalize",

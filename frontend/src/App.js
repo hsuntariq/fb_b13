@@ -24,23 +24,23 @@ const App = () => {
     // Cleanup
     return () => window.removeEventListener("load", handleLoad);
   }, []);
-  if (loading) {
-    return (
-      <>
-        <div
-          style={{ height: "100vh" }}
-          className="d-flex justify-content-center align-items-center"
-        >
-          <img
-            width={200}
-            height={200}
-            src="https://www.pidl.org/site-assets/images/social-inside-facebook-icon.png/@@images/image.png"
-            alt="loading..."
-          />
-        </div>
-      </>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <>
+  //       <div
+  //         style={{ height: "100vh" }}
+  //         className="d-flex justify-content-center align-items-center"
+  //       >
+  //         <img
+  //           width={200}
+  //           height={200}
+  //           src="https://www.pidl.org/site-assets/images/social-inside-facebook-icon.png/@@images/image.png"
+  //           alt="loading..."
+  //         />
+  //       </div>
+  //     </>
+  //   );
+  // }
   return (
     <>
       <Router>

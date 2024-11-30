@@ -5,6 +5,11 @@ const connectDB = require("./config/connect");
 const app = express();
 require("dotenv").config();
 require("colors");
+const http = require("http");
+// get the socket server
+const { Server } = require("socket.io");
+// make your own server
+
 const cors = require("cors");
 const postRouter = require("./routes/postRoutes");
 const requestRouter = require("./routes/requestRoute");
@@ -14,12 +19,32 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+const server = http.createServer(app);
+
+// make socket server
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["POST", "GET", "PUT", "DELETE"],
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log(`user connected on host: ${socket.id.blue}`);
+
+  socket.on("add_friend", (data) => {
+    socket.broadcast.emit("show_request", data);
+    // console.log(data);
+  });
+});
+
 app.use("/api/user/", userRouter);
 app.use("/api/posts/", postRouter);
 app.use("/api/requests/", requestRouter);
 
 app.use(errorHandler);
 
-app.listen(process.env.PORT, () =>
+server.listen(process.env.PORT, () =>
   console.log(`Server started on port: ${process.env.PORT.yellow}`)
 );

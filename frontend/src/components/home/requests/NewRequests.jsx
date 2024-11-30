@@ -12,22 +12,23 @@ import {
 const NewRequests = () => {
   const { userLoading, userError, userSuccess, userMessages, allUsers } =
     useSelector((state) => state.user);
-  const { requests } = useSelector((state) => state.requests);
+  const { requests, requestSuccess } = useSelector((state) => state.requests);
   const dispatch = useDispatch();
   useEffect(() => {
     if (userError) {
       toast.error(userMessages);
     }
 
-    dispatch(getAllUsersData());
-    dispatch(myRequestsData());
     dispatch(requestReset());
     dispatch(userReset());
+    dispatch(getAllUsersData());
+    dispatch(myRequestsData());
   }, []);
 
   const filteredUsers = allUsers?.filter((item, index) => {
-    return item?.id === requests[index]?.sendRequests[0]?.to;
+    return item?._id !== requests[index]?.sendRequests[0]?.to;
   });
+  console.log(filteredUsers);
 
   return (
     <>
@@ -80,6 +81,10 @@ const NewRequests = () => {
         </div>
       </div>
       <hr />
+
+      {filteredUsers?.map((item, index) => {
+        return <UserList key={index} {...item} />;
+      })}
     </>
   );
 };
