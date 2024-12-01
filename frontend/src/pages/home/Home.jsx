@@ -7,6 +7,7 @@ import { Row, Col } from "react-bootstrap";
 import Sidebar from "../../components/home/Sidebar";
 import Posts from "../../components/home/Posts";
 import Users from "../../components/home/Users";
+import ShowRequestPopUp from "../../components/home/requests/ShowRequestPopUp";
 const Home = () => {
   const { user } = useSelector((state) => state.user);
   const navigate = useNavigate();

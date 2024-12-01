@@ -1,5 +1,5 @@
 import { Button, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import UserList from "./UserList";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -8,10 +8,15 @@ import {
   myRequestsData,
   requestReset,
 } from "../../../features/requests/requestSlice";
+import ShowRequestPopUp from "./ShowRequestPopUp";
+import io from "socket.io-client";
+const socket = io.connect("http://localhost:3001");
 
 const NewRequests = () => {
-  const { userLoading, userError, userSuccess, userMessages, allUsers } =
+  const { user, userLoading, userError, userSuccess, userMessages, allUsers } =
     useSelector((state) => state.user);
+  const [newRequest, setNewRequest] = useState(false);
+  const [userData, setUserData] = useState(null);
   const { requests, requestSuccess } = useSelector((state) => state.requests);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -28,10 +33,25 @@ const NewRequests = () => {
   const filteredUsers = allUsers?.filter((item, index) => {
     return item?._id !== requests[index]?.sendRequests[0]?.to;
   });
-  console.log(filteredUsers);
+
+  useEffect(() => {
+    socket.on("show_request", (data) => {
+      if (data?.to_id == user?._id) {
+        setNewRequest(true);
+        const audio = new Audio("/sounds/newRequest.wav");
+        audio.play();
+        setUserData(data);
+      }
+    });
+  }, [socket]);
 
   return (
     <>
+      <ShowRequestPopUp
+        setNewRequest={setNewRequest}
+        newRequest={newRequest}
+        {...userData}
+      />
       <div className="d-flex p-3 w-100  align-items-center justify-content-between">
         <Typography
           variant="h6"

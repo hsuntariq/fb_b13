@@ -37,7 +37,21 @@ const getMyRequests = asyncHandler(async (req, res) => {
   res.send(myRequests);
 });
 
+const rejectRequest = asyncHandler(async (req, res) => {
+  const { from, to } = req.body;
+  const findRequest = await requestModel.findOne({
+    "sendRequests.from": from,
+    "sendRequests.to": to,
+  });
+
+  if (findRequest) {
+    await findRequest.deleteOne({ _id: findRequest._id });
+    res.send("Request rejected");
+  }
+});
+
 module.exports = {
   addFriend,
   getMyRequests,
+  rejectRequest,
 };

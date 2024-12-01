@@ -9,6 +9,7 @@ import {
 import { ThreeCircles } from "react-loader-spinner";
 
 import io from "socket.io-client";
+import ShowRequestPopUp from "./ShowRequestPopUp";
 
 const socket = io.connect("http://localhost:3001");
 
@@ -33,14 +34,6 @@ const UserList = ({ f_name, l_name, image, _id }) => {
 
   const slicedName =
     username.length > 10 ? `${username.slice(0, 10)}... ` : username;
-
-  useEffect(() => {
-    socket.on("show_request", (data) => {
-      if (data?.to_id == user?._id) {
-        alert("You have a new Request");
-      }
-    });
-  }, [socket]);
 
   const handleRequest = async (id) => {
     try {
