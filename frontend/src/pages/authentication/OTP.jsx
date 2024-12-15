@@ -26,7 +26,7 @@ const OTP = () => {
     }
     if (userSuccess) {
       toast.success("OTP verified");
-      navigate("/home");
+      // navigate("/home");
     }
 
     dispatch(userReset());

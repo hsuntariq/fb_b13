@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getPosts, uploadPost } from "./postService";
+import { addComment, getPosts, uploadPost } from "./postService";
+import MyPosts from "../../components/home/MyPosts";
 
 const initialState = {
   posts: [],
@@ -8,6 +9,7 @@ const initialState = {
   postError: false,
   postMessage: "",
   getPostSuccess: false,
+  commentLoading: false,
 };
 
 export const uploadPostData = createAsyncThunk(
@@ -16,6 +18,17 @@ export const uploadPostData = createAsyncThunk(
     try {
       let token = thunkAPI.getState().user.user.token;
       return await uploadPost(postData, token);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+export const addCommentData = createAsyncThunk(
+  "add-comment",
+  async (postData, thunkAPI) => {
+    try {
+      let token = thunkAPI.getState().user.user.token;
+      return await addComment(postData, token);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.error);
     }
@@ -72,6 +85,23 @@ export const postSlice = createSlice({
         state.postLoading = false;
         state.getPostSuccess = true;
         state.posts = action.payload;
+      })
+      .addCase(addCommentData.pending, (state, action) => {
+        state.commentLoading = true;
+      })
+      .addCase(addCommentData.rejected, (state, action) => {
+        state.postLoading = false;
+        state.postError = true;
+        state.postMessage = action.payload;
+      })
+      .addCase(addCommentData.fulfilled, (state, action) => {
+        state.postLoading = false;
+        state.getPostSuccess = true;
+        state.posts.map((item, index) => {
+          if (item?._id == action?.payload?._id) {
+            item.comments = action.payload.comments;
+          }
+        });
       });
   },
 });

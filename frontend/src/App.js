@@ -8,6 +8,8 @@ import { Toaster } from "react-hot-toast";
 import Home from "./pages/home/Home";
 import OTP from "./pages/authentication/OTP";
 import "react-loading-skeleton/dist/skeleton.css";
+import MarketPlace from "./pages/home/MarketPlace";
+import VideoCall from "./pages/videocall/VideoCall";
 
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,11 @@ const App = () => {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/home" element={<Home />} />
-
+          <Route path="/marketplace" element={<MarketPlace />} />
+          <Route
+            path="/video-call/:sender_id/:receiver_id"
+            element={<VideoCall />}
+          />
           <Route path="/otp" element={<OTP />} />
         </Routes>
         <Toaster />

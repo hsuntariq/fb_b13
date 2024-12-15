@@ -17,7 +17,25 @@ const getPosts = asyncHandler(async (req, res) => {
   res.send(myPosts);
 });
 
+const addComment = asyncHandler(async (req, res) => {
+  const user_id = req.user._id;
+  const { post_id, comment } = req.body;
+
+  const findPost = await postModel.findOne({ _id: post_id });
+
+  findPost.comments.push({
+    user_id,
+    comment,
+    time: Date.now(),
+  });
+
+  await findPost.save();
+
+  res.send(findPost);
+});
+
 module.exports = {
   uploadPost,
   getPosts,
+  addComment,
 };

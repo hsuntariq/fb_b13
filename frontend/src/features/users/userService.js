@@ -10,6 +10,14 @@ export const registerUser = async (userData) => {
 
   return response.data;
 };
+export const loginUser = async (userData) => {
+  const response = await axios.post(`${base_url}/login-user`, userData);
+  if (response.data) {
+    localStorage.setItem("user", JSON.stringify(response.data));
+  }
+
+  return response.data;
+};
 
 export const verifyOTP = async (otpData) => {
   const response = await axios.post(
@@ -17,6 +25,10 @@ export const verifyOTP = async (otpData) => {
     otpData
   );
   return response.data;
+};
+
+export const logout = () => {
+  localStorage.removeItem("user");
 };
 
 export const getAllUsers = async () => {

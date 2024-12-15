@@ -1,6 +1,12 @@
 // import two things always
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllUsers, registerUser, verifyOTP } from "./userService";
+import {
+  getAllUsers,
+  loginUser,
+  logout,
+  registerUser,
+  verifyOTP,
+} from "./userService";
 
 // check user from the local storage
 const checkUser = JSON.parse(localStorage.getItem("user"));
@@ -22,6 +28,26 @@ export const registerUserData = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       return await registerUser(userData);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+export const loginUserData = createAsyncThunk(
+  "log-user",
+  async (userData, thunkAPI) => {
+    try {
+      return await loginUser(userData);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+export const logoutUser = createAsyncThunk(
+  "logout-user",
+  async (_, thunkAPI) => {
+    try {
+      return await logout();
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.error);
     }
@@ -75,6 +101,33 @@ export const userSlice = createSlice({
         state.user = null;
       })
       .addCase(registerUserData.fulfilled, (state, action) => {
+        state.userLoading = false;
+        state.userSuccess = true;
+        state.user = action.payload;
+      })
+      .addCase(logoutUser.pending, (state, action) => {
+        state.userLoading = true;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.userError = true;
+        state.userLoading = false;
+        state.userMessage = action.payload;
+      })
+      .addCase(logoutUser.fulfilled, (state, action) => {
+        state.userLoading = false;
+
+        state.user = null;
+      })
+      .addCase(loginUserData.pending, (state, action) => {
+        state.userLoading = true;
+      })
+      .addCase(loginUserData.rejected, (state, action) => {
+        state.userError = true;
+        state.userLoading = false;
+        state.userMessage = action.payload;
+        state.user = null;
+      })
+      .addCase(loginUserData.fulfilled, (state, action) => {
         state.userLoading = false;
         state.userSuccess = true;
         state.user = action.payload;

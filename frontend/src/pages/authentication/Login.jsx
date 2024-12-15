@@ -10,10 +10,14 @@ const Login = () => {
 
   const { user } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (user) {
+  //     navigate("/home");
+  //   }
+  // }, []);
+
   useEffect(() => {
-    if (user) {
-      navigate("/home");
-    }
+    document.title = "Login With facebook";
   }, []);
 
   return (

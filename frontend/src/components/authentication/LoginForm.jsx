@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { loginUserData, userReset } from "../../features/users/userSlice";
+import { toast } from "react-hot-toast";
+import { ThreeCircles } from "react-loader-spinner";
 const LoginForm = () => {
   // state to check the status of eye
   const [showEye, setShowEye] = useState(false);
   const [showPass, setShowPass] = useState(false);
+  const { user, userLoading, userError, userSuccess, userMessage } =
+    useSelector((state) => state.user);
   const [formFields, setFormFields] = useState({
     m_mail: "",
     password: "",
@@ -31,6 +37,32 @@ const LoginForm = () => {
       setShowEye(false);
     }
   }, [password]);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userError) {
+      toast.error(userMessage);
+    }
+
+    dispatch(userReset());
+  }, [userError, userSuccess, dispatch]);
+
+  useEffect(() => {
+    if (userSuccess) {
+      navigate("/home");
+    }
+  });
+
+  const handleLogin = () => {
+    const userData = {
+      m_mail,
+      password,
+    };
+
+    dispatch(loginUserData(userData));
+  };
 
   return (
     <>
@@ -67,8 +99,27 @@ const LoginForm = () => {
               />
             ))}
         </div>
-        <Button variant="contained" className="w-100 bg-blue p-2 ">
-          Log In
+        <Button
+          onClick={handleLogin}
+          disabled={userLoading}
+          variant="contained"
+          className={`w-100 bg-blue p-2 ${userLoading && "bg-secondary"}  `}
+        >
+          {userLoading ? (
+            <>
+              <ThreeCircles
+                visible={true}
+                height="25"
+                width="25"
+                color="white"
+                ariaLabel="three-circles-loading"
+                wrapperStyle={{ justifyContent: "center" }}
+                wrapperClass=""
+              />
+            </>
+          ) : (
+            "Log In"
+          )}
         </Button>
         <a
           href="/"

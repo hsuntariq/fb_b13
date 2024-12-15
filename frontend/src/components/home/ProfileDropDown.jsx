@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Typography } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaUser } from "react-icons/fa";
 import { BsGear, BsGearFill } from "react-icons/bs";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
@@ -8,9 +8,13 @@ import { IoHelpCircle } from "react-icons/io5";
 import { FaMoon } from "react-icons/fa";
 import { MdFeedback } from "react-icons/md";
 import { GiEntryDoor } from "react-icons/gi";
+import { logoutUser } from "../../features/users/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const ProfileDropDown = ({ setShowPopUp }) => {
   const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
     <>
       <div
@@ -98,7 +102,13 @@ const ProfileDropDown = ({ setShowPopUp }) => {
           </div>
           <MdOutlineKeyboardArrowRight size={25} />
         </div>
-        <div className="d-flex mt-4 mb-2 justify-content-between align-items-center">
+        <div
+          onClick={() => {
+            dispatch(logoutUser());
+            navigate("/");
+          }}
+          className="d-flex cursor-pointer mt-4 mb-2 justify-content-between align-items-center"
+        >
           <div className="d-flex gap-2 align-items-center">
             <div className="p-2 bg-gray rounded-circle">
               <GiEntryDoor size={25} />

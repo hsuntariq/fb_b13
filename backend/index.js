@@ -13,6 +13,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const postRouter = require("./routes/postRoutes");
 const requestRouter = require("./routes/requestRoute");
+const paymentRouter = require("./routes/paymentRoute");
 app.use(cors());
 connectDB();
 
@@ -37,11 +38,26 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("show_request", data);
     // console.log(data);
   });
+
+  socket.on("sent_message", (data) => {
+    console.log(data);
+    socket.broadcast.emit("received_message", data);
+  });
+
+  socket.on("incoming-video", (data) => {
+    socket.broadcast.emit("show-video", data);
+    console.log(data);
+  });
+
+  socket.on("reject_call", (data) => {
+    socket.broadcast.emit("call_rejected", data);
+  });
 });
 
 app.use("/api/user/", userRouter);
 app.use("/api/posts/", postRouter);
 app.use("/api/requests/", requestRouter);
+app.use("/api/payment/", paymentRouter);
 
 app.use(errorHandler);
 

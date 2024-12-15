@@ -18,7 +18,7 @@ const Posts = () => {
     dispatch(getPostData());
 
     dispatch(postReset());
-  }, [dispatch]);
+  }, [postError]);
   return (
     <>
       <div className="col-xxl-7 col-xl-11 col-lg-10 mx-auto">

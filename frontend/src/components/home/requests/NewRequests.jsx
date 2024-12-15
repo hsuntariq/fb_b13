@@ -10,6 +10,7 @@ import {
 } from "../../../features/requests/requestSlice";
 import ShowRequestPopUp from "./ShowRequestPopUp";
 import io from "socket.io-client";
+import ChatPopUp from "../chat/ChatPopUp";
 const socket = io.connect("http://localhost:3001");
 
 const NewRequests = () => {
@@ -18,6 +19,7 @@ const NewRequests = () => {
   const [newRequest, setNewRequest] = useState(false);
   const [userData, setUserData] = useState(null);
   const { requests, requestSuccess } = useSelector((state) => state.requests);
+
   const dispatch = useDispatch();
   useEffect(() => {
     if (userError) {
@@ -44,6 +46,12 @@ const NewRequests = () => {
       }
     });
   }, [socket]);
+
+  const [activePopupId, setActivePopupId] = useState(null); // Track the currently active popup
+
+  // messages
+  const [sentMessages, setSentMessages] = useState([]);
+  const [receivedMessages, setReceivedMessages] = useState([]);
 
   return (
     <>
@@ -103,7 +111,18 @@ const NewRequests = () => {
       <hr />
 
       {filteredUsers?.map((item, index) => {
-        return <UserList key={index} {...item} />;
+        return (
+          <UserList
+            activePopupId={activePopupId}
+            setActivePopupId={setActivePopupId}
+            key={index}
+            sentMessages={sentMessages}
+            setSentMessages={setSentMessages}
+            receivedMessages={receivedMessages}
+            setReceivedMessages={setReceivedMessages}
+            {...item}
+          />
+        );
       })}
     </>
   );
